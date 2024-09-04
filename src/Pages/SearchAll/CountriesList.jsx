@@ -1,0 +1,128 @@
+import React, { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../context/Context";
+import MiniCountry from "./MiniCountry";
+import { useInView } from "react-intersection-observer";
+import SkeletonMiniCountry from "./SkeletonMiniCountry";
+import getColumnCount from "./../../utils";
+
+function CountriesList({
+  independentActive,
+  dependentActive,
+  category,
+  inputRef,
+}) {
+  const { loading, countryData } = useContext(AppContext);
+  const [filteredData, setFilteredData] = useState([]);
+  const [visibleCount, setVisibleCount] = useState(8);
+  let wasVisibleCount = 4;
+
+  // const { ref, inView } = useInView({
+  //   threshold: 0.1, // Trigger when 10% of the target is visible
+  //   triggerOnce: false, // Allow multiple triggers
+  // });
+
+  // useEffect(() => {
+  //   if (inView) {
+  //     setVisibleCount((p) => p + 20);
+  //   }
+  // }, [inView]);
+
+  //Scrolling
+
+  const adjustVisibleCount = () => {
+    const columns = getColumnCount();
+    const itemsToShow = Math.ceil(visibleCount / columns) * columns;
+    setVisibleCount(itemsToShow);
+  };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop + 1 >=
+      document.documentElement.scrollHeight
+    ) {
+      wasVisibleCount = visibleCount;
+      setVisibleCount((p) => p + 8);
+    }
+  };
+
+  useEffect(() => {
+    adjustVisibleCount(); // Ensure initial count is a multiple of columns
+    window.addEventListener("resize", adjustVisibleCount);
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("resize", adjustVisibleCount);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [visibleCount]);
+
+  //Data Handling
+
+  useEffect(() => {
+    const handleFilterData = () => {
+      const inputFilter = inputRef.current.value.toLowerCase();
+
+      let filteredDataTemp = countryData || [];
+
+      if (independentActive) {
+        filteredDataTemp = filteredDataTemp.filter((c) => c.independent);
+      }
+      if (dependentActive) {
+        filteredDataTemp = filteredDataTemp.filter((c) => !c.independent);
+      }
+
+      if (category === "name") {
+        filteredDataTemp = filteredDataTemp.filter((c) =>
+          c.name.common.toLowerCase().includes(inputFilter)
+        );
+      }
+      if (category === "region") {
+        filteredDataTemp = filteredDataTemp.filter((c) =>
+          c.region.toLowerCase().includes(inputFilter)
+        );
+      }
+      setFilteredData(filteredDataTemp);
+    };
+
+    handleFilterData();
+  }, [countryData, independentActive, dependentActive, category, inputRef]);
+
+  useEffect(() => {
+    console.log(inputRef);
+  }, [inputRef]);
+
+  // const filteredData = countryData.filter((d) => {
+  //   if (independentActive) return d.independent === true;
+  //   if (dependentActive) return d.independent === false;
+  //   return true;
+  // });
+
+  return (
+    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 md:grid-cols-3">
+      {loading
+        ? Array.from({ length: visibleCount }).map((_, index) => (
+            <SkeletonMiniCountry key={index} />
+          ))
+        : filteredData
+            .slice(0, visibleCount)
+            .map((d, index) => (
+              <MiniCountry
+                key={index}
+                flagURL={d.flags.png}
+                name={d.name.common}
+                independent={d.independent}
+                population={d.population}
+                region={d.region}
+                capital={d.capital}
+                territory={d.area}
+              />
+            ))}
+      {visibleCount < countryData.length &&
+        Array.from({ length: getColumnCount() }).map((_, index) => (
+          <SkeletonMiniCountry key={index} />
+        ))}
+    </div>
+  );
+}
+
+export default CountriesList;
