@@ -25,9 +25,8 @@ function SearchAll() {
     } else {
       setIndependentActive(true);
       setDependentActive(false);
-
-      // handleFilterData();
     }
+    // handleFilterData();
   };
 
   const handleDependencyClick = () => {
@@ -36,9 +35,8 @@ function SearchAll() {
     } else {
       setDependentActive(true);
       setIndependentActive(false);
-
-      // handleFilterData();
     }
+    // handleFilterData();
   };
 
   const handleCategoryChange = (v) => {
@@ -118,7 +116,7 @@ function SearchAll() {
 
   return (
     <>
-      <div className="px-6 mt-8">
+      <div className="px-6 mt-8 mx-auto max-w-screen-2xl">
         <h1 className="text-4xl text-center">Start Searching Now!</h1>
         <div className="h-1 w-full bg-gray-100 mt-4"></div>
 
@@ -132,7 +130,7 @@ function SearchAll() {
           </button>
         </div>
 
-        <div className="mt-4 flex items-center justify-between mb-4">
+        <div className="mt-4 block items-center justify-between mb-4 md:flex">
           <div className="flex items-center ">
             <p className="mr-3">Name:</p>
             <input

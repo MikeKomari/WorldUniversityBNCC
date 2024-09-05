@@ -50,24 +50,19 @@ function CountriesList({ filteredData }) {
     };
   }, [visibleCount]);
 
-  //Data Handling
-
-  // const filteredData = countryData.filter((d) => {
-  //   if (independentActive) return d.independent === true;
-  //   if (dependentActive) return d.independent === false;
-  //   return true;
-  // });
-
   if (filteredData.length === 0) {
     return (
       <div>
-        <p>no data desu</p>
+        <h1 className="text-3xl text-center">
+          No Countries were Found From your Input
+        </h1>
+        <p className="text-center">Please re-check your input and try again.</p>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 md:grid-cols-3">
+    <div className="grid grid-cols-1 gap-3 xl:grid-cols-4 md:grid-cols-3">
       {loading
         ? Array.from({ length: visibleCount }).map((_, index) => (
             <SkeletonMiniCountry key={index} />
@@ -87,7 +82,8 @@ function CountriesList({ filteredData }) {
                 code={d.cca2}
               />
             ))}
-      {visibleCount < countryData.length &&
+      {filteredData &&
+        visibleCount < countryData.length &&
         Array.from({ length: getColumnCount() }).map((_, index) => (
           <SkeletonMiniCountry key={index} />
         ))}

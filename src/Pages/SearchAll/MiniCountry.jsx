@@ -20,13 +20,18 @@ function MiniCountry({
 }) {
   const navigate = useNavigate();
   const codeLowerCased = code.toLowerCase();
+  const nameWithoutSpace = name.replace(/\s+/g, "");
 
-  const handleCountryNavigation = (country) => {
-    navigate(`/details/${country}`);
+  const handleCountryNavigation = () => {
+    navigate(`/detail/:${nameWithoutSpace}`, {
+      state: { code: codeLowerCased },
+    });
   };
 
+  // console.log(codeLowerCased);
+
   return (
-    <div className="aborder-2 flex flex-col justify-between p-2">
+    <div className="border-2 flex flex-col justify-between p-2">
       <img
         className="w-[300px] h-[200px] object-cover bg-center"
         src={flagURL}
@@ -61,7 +66,6 @@ function MiniCountry({
           <TbChartArea />
           <p className="pr-2">Territory: </p>
           <p className="text-gray-800">{territory}</p>
-          <p className="text-gray-800">{code}</p>
         </div>
         {/* <div className="flex items-center ">
           <IoLanguageOutline />
@@ -72,7 +76,7 @@ function MiniCountry({
 
       <div>
         <button
-          onClick={() => handleCountryNavigation(codeLowerCased)}
+          onClick={() => handleCountryNavigation()}
           className="w-full py-2 px-4 border-2 rounded-full mt-4 border-gray-800"
         >
           Details

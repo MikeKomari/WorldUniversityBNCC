@@ -12,7 +12,7 @@ import {
 
 export function SelectDropdown({ onChangeCategory, selectedCategory }) {
   return (
-    <Select onValueChange={(v) => onChangeCategory(v)}>
+    <Select onValueChange={(v) => onChangeCategory(v)} className="mt-6 md:mt-0">
       <SelectTrigger className="w-[180px]">
         <SelectValue placeholder={`Filter by ${selectedCategory}`} />
       </SelectTrigger>
