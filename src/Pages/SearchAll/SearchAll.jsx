@@ -1,6 +1,8 @@
-import React, { useContext, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Loader from "./Loader";
 import Context from "../../context/Context";
+
+import { AppContext } from "../../context/Context";
 
 import Independency from "./Independency";
 import MiniCountry from "./MiniCountry";
@@ -10,7 +12,10 @@ import { SelectDropdown } from "../../components/SelectDropdown";
 function SearchAll() {
   const [independentActive, setIndependentActive] = useState(false);
   const [dependentActive, setDependentActive] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("name");
+
+  const { loading, countryData } = useContext(AppContext);
+  const [filteredData, setFilteredData] = useState([]);
 
   const inputRef = useRef(null);
 
@@ -20,6 +25,8 @@ function SearchAll() {
     } else {
       setIndependentActive(true);
       setDependentActive(false);
+
+      // handleFilterData();
     }
   };
 
@@ -29,6 +36,8 @@ function SearchAll() {
     } else {
       setDependentActive(true);
       setIndependentActive(false);
+
+      // handleFilterData();
     }
   };
 
@@ -37,9 +46,75 @@ function SearchAll() {
     setSelectedCategory(v);
   };
 
-  function tempDesu() {
-    console.log(inputRef.current.value);
-  }
+  const handleFilterData = () => {
+    const inputFilter = inputRef.current.value.toLowerCase();
+
+    let filteredDataTemp = countryData || [];
+
+    if (independentActive) {
+      filteredDataTemp = filteredDataTemp.filter((c) => c.independent);
+    }
+    if (dependentActive) {
+      filteredDataTemp = filteredDataTemp.filter((c) => !c.independent);
+    }
+
+    if (selectedCategory === "name") {
+      filteredDataTemp = filteredDataTemp.filter((c) =>
+        c.name.common.toLowerCase().includes(inputFilter)
+      );
+    }
+    if (selectedCategory === "region") {
+      filteredDataTemp = filteredDataTemp.filter((c) =>
+        c.region.toLowerCase().includes(inputFilter)
+      );
+    }
+
+    if (selectedCategory === "ascending") {
+      filteredDataTemp = filteredDataTemp.sort((a, b) =>
+        a.name.common > b.name.common ? 1 : -1
+      );
+    }
+
+    if (selectedCategory === "descending") {
+      filteredDataTemp = filteredDataTemp.sort((a, b) =>
+        b.name.common.localeCompare(a.name.common)
+      );
+    }
+
+    if (selectedCategory === "all") {
+      filteredDataTemp = countryData;
+    }
+
+    if (selectedCategory === "lang") {
+      filteredDataTemp = filteredDataTemp.filter((c) => {
+        if (!inputFilter) {
+          return true;
+        }
+
+        if (!c.languages) {
+          return false;
+        }
+
+        // Get the code
+        const firstLangCode = Object.keys(c.languages)[0];
+
+        if (!firstLangCode || !c.languages[firstLangCode]) {
+          return false;
+        }
+
+        // Get the name
+        const languageName = c.languages[firstLangCode];
+
+        // Check if the language name includes the filter input
+        return languageName.toLowerCase().includes(inputFilter);
+      });
+    }
+    setFilteredData(filteredDataTemp);
+  };
+
+  useEffect(() => {
+    handleFilterData();
+  }, [countryData, independentActive, dependentActive, selectedCategory]);
 
   return (
     <>
@@ -67,20 +142,18 @@ function SearchAll() {
               name=""
               id=""
               placeholder="Search By Category"
-              onInput={tempDesu}
+              onInput={handleFilterData}
             />
           </div>
           <div>
-            <SelectDropdown onChangeCategory={handleCategoryChange} />
+            <SelectDropdown
+              onChangeCategory={handleCategoryChange}
+              selectedCategory={selectedCategory}
+            />
           </div>
         </div>
 
-        <CountriesList
-          independentActive={independentActive}
-          dependentActive={dependentActive}
-          category={selectedCategory}
-          inputRef={inputRef}
-        />
+        <CountriesList filteredData={filteredData} />
       </div>
     </>
   );

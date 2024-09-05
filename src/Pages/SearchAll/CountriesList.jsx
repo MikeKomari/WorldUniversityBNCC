@@ -5,14 +5,8 @@ import { useInView } from "react-intersection-observer";
 import SkeletonMiniCountry from "./SkeletonMiniCountry";
 import getColumnCount from "./../../utils";
 
-function CountriesList({
-  independentActive,
-  dependentActive,
-  category,
-  inputRef,
-}) {
+function CountriesList({ filteredData }) {
   const { loading, countryData } = useContext(AppContext);
-  const [filteredData, setFilteredData] = useState([]);
   const [visibleCount, setVisibleCount] = useState(8);
   let wasVisibleCount = 4;
 
@@ -58,44 +52,19 @@ function CountriesList({
 
   //Data Handling
 
-  useEffect(() => {
-    const handleFilterData = () => {
-      const inputFilter = inputRef.current.value.toLowerCase();
-
-      let filteredDataTemp = countryData || [];
-
-      if (independentActive) {
-        filteredDataTemp = filteredDataTemp.filter((c) => c.independent);
-      }
-      if (dependentActive) {
-        filteredDataTemp = filteredDataTemp.filter((c) => !c.independent);
-      }
-
-      if (category === "name") {
-        filteredDataTemp = filteredDataTemp.filter((c) =>
-          c.name.common.toLowerCase().includes(inputFilter)
-        );
-      }
-      if (category === "region") {
-        filteredDataTemp = filteredDataTemp.filter((c) =>
-          c.region.toLowerCase().includes(inputFilter)
-        );
-      }
-      setFilteredData(filteredDataTemp);
-    };
-
-    handleFilterData();
-  }, [countryData, independentActive, dependentActive, category, inputRef]);
-
-  useEffect(() => {
-    console.log(inputRef);
-  }, [inputRef]);
-
   // const filteredData = countryData.filter((d) => {
   //   if (independentActive) return d.independent === true;
   //   if (dependentActive) return d.independent === false;
   //   return true;
   // });
+
+  if (filteredData.length === 0) {
+    return (
+      <div>
+        <p>no data desu</p>
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 md:grid-cols-3">
@@ -115,6 +84,7 @@ function CountriesList({
                 region={d.region}
                 capital={d.capital}
                 territory={d.area}
+                code={d.cca2}
               />
             ))}
       {visibleCount < countryData.length &&

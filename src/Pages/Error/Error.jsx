@@ -12,9 +12,9 @@ function Error() {
       <div>
         <h1 className="text-black text-5xl ">Oops! Something went wrong!</h1>
         <p className="text-black font-thin w-5/6 text-xl pt-5">
-          Please double-check the country name or the URL and try again. If the
-          problem persists, feel free to contact our support team for
-          assistance.
+          Please double-check the country name or the URL and try again. Maybe
+          try refreshing the page. If the problem persists, feel free to contact
+          our support team for assistance.
         </p>
         <p className="text-black pt-5">
           {errorMsg ? errorMsg : "Page Not Found"} {errorCode ? errorCode : 404}

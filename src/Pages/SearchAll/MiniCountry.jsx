@@ -5,6 +5,7 @@ import { CiFlag1 } from "react-icons/ci";
 import { MdOutlinePlace } from "react-icons/md";
 import { TbChartArcs, TbChartArea } from "react-icons/tb";
 import { IoLanguageOutline } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
 
 function MiniCountry({
   flagURL,
@@ -15,9 +16,17 @@ function MiniCountry({
   capital,
   territory,
   language,
+  code,
 }) {
+  const navigate = useNavigate();
+  const codeLowerCased = code.toLowerCase();
+
+  const handleCountryNavigation = (country) => {
+    navigate(`/details/${country}`);
+  };
+
   return (
-    <div className="border-2 flex flex-col justify-between p-2">
+    <div className="aborder-2 flex flex-col justify-between p-2">
       <img
         className="w-[300px] h-[200px] object-cover bg-center"
         src={flagURL}
@@ -52,6 +61,7 @@ function MiniCountry({
           <TbChartArea />
           <p className="pr-2">Territory: </p>
           <p className="text-gray-800">{territory}</p>
+          <p className="text-gray-800">{code}</p>
         </div>
         {/* <div className="flex items-center ">
           <IoLanguageOutline />
@@ -61,7 +71,10 @@ function MiniCountry({
       </div>
 
       <div>
-        <button className="w-full py-2 px-4 border-2 rounded-full mt-4 border-gray-800">
+        <button
+          onClick={() => handleCountryNavigation(codeLowerCased)}
+          className="w-full py-2 px-4 border-2 rounded-full mt-4 border-gray-800"
+        >
           Details
         </button>
       </div>

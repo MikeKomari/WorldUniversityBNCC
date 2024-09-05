@@ -111,7 +111,7 @@ export function NavbarSimple() {
       <Collapse open={openNav}>
         <NavList />
       </Collapse>
-      <div className="items-center flex ">
+      {/* <div className="items-center flex ">
         <input
           type="text"
           placeholder="Get Started"
@@ -120,7 +120,7 @@ export function NavbarSimple() {
         <button className="text-black h-6 w-6 rounded-full border-gray-900 border">
           &#9992;
         </button>
-      </div>
+      </div> */}
     </Navbar>
   );
 }

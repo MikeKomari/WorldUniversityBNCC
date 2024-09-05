@@ -22,7 +22,6 @@ function ContextProvider(props) {
           },
         });
       } finally {
-        console.log("done");
         setLoading(false);
       }
     };

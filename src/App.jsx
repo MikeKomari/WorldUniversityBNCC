@@ -13,10 +13,10 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<SearchAll />} />
         <Route path="/about" element={<About />} />
-        <Route path="/detail" element={<Detail />} />
+        <Route path="/detail/:country" element={<Detail />} />
         <Route path="/error" element={<Error />} />
 
-        <Route path="*" element={<Navigate to="/error" />} />
+        {/* <Route path="*" element={<Navigate to="/error" />} /> */}
       </Routes>
     </Layout>
   );
