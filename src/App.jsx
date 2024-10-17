@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import About from "./Pages/About/About";
 import Home from "./Pages/Home/Home";
-import Layout from "./Layout/Layout";
+import Layout from "./layout/Layout";
 import Detail from "./Pages/Detail/Detail";
 import SearchAll from "./Pages/SearchAll/SearchAll";
 import Error from "./Pages/Error/Error";
